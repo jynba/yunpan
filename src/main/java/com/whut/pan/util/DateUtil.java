@@ -4,7 +4,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
- * @author Sandeepin
+ * @author jynba
  * 2017/11/11 0011
  */
 public class DateUtil {

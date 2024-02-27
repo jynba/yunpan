@@ -10,7 +10,7 @@ import java.util.Map;
 /**
  * 系统工具、获取系统的一些信息
  *
- * @author Sandeepin
+ * @author jynba
  * 2017/11/9 0009
  */
 public class SystemUtil {

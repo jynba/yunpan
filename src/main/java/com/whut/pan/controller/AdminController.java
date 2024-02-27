@@ -65,7 +65,7 @@ public class AdminController {
     @RequestMapping(value = "/registerCode")
     public ModelAndView registerCode(ModelAndView modelAndView, HttpServletRequest request) {
         String username = getUserNameByRequest(request);
-        if ("sandeepin".equals(username) || "cflower".equals(username)) {
+        if ("jynba".equals(username) || "cflower".equals(username)) {
             modelAndView.setViewName("registerCode");
             return modelAndView;
         } else {

@@ -64,7 +64,7 @@ export default class BasicLayout extends Component {
                             {this.props.children}
                         </div>
                     </Content>
-                    <Footer style={{ textAlign: 'center' }}>异想花云 ©2019 Cflower & Sandeepin</Footer>
+                    <Footer style={{ textAlign: 'center' }}>异想花云 ©2019 Cflower & jynba</Footer>
                 </Layout>
             </Layout>
         )

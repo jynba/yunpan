@@ -73,8 +73,8 @@ CREATE TABLE `pan_user` (
 -- ----------------------------
 -- Records of pan_user
 -- ----------------------------
-INSERT INTO `pan_user` VALUES ('1', 'admin', '464A4CD851009450D6398D7BE4D62083175C4D', '0', 'sandeepin@qq.com', '15578352978', null);
-INSERT INTO `pan_user` VALUES ('2', 'sandeepin', '464A4CD851009450D6398D7BE4D62083175C4D', '0', 'jfz@jfz.me', '17671766376', null);
+INSERT INTO `pan_user` VALUES ('1', 'admin', '464A4CD851009450D6398D7BE4D62083175C4D', '0', 'jynba@qq.com', '15578352978', null);
+INSERT INTO `pan_user` VALUES ('2', 'jynba', '464A4CD851009450D6398D7BE4D62083175C4D', '0', 'jfz@jfz.me', '17671766376', null);
 INSERT INTO `pan_user` VALUES ('3', 'cflower', '464A4CD851009450D6398D7BE4D62083175C4D', '0', 'xxx@qq.com', '18200000000', null);
 INSERT INTO `pan_user` VALUES ('4', 'zc2', '464A4CD851009450D6398D7BE4D62083175C4D', '0', 'xxx@qq.com', '18200000000', null);
 

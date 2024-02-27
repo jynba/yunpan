@@ -6,7 +6,7 @@ import org.slf4j.LoggerFactory;
 /**
  * 描述
  *
- * @author Sandeepin
+ * @author jynba
  * @date 2019/7/10 0010
  */
 class PrintStream extends Thread {

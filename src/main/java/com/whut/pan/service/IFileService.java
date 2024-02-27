@@ -7,7 +7,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 
 /**
- * @author Sandeepin
+ * @author jynba
  * 2018/2/12 0012
  */
 public interface IFileService {

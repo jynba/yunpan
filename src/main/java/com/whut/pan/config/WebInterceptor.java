@@ -16,7 +16,7 @@ import javax.servlet.http.HttpServletResponse;
 /**
  * 拦截配置
  *
- * @author Sandeepin
+ * @author jynba
  */
 public class WebInterceptor implements HandlerInterceptor {
 

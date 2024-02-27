@@ -41,7 +41,7 @@ import static com.whut.pan.util.WebUtil.getUserNameByRequest;
 /**
  * 云盘v1版Rest接口
  *
- * @author Sandeepin
+ * @author jynba
  * @date 2019/9/6 0006
  */
 @RestController
@@ -76,7 +76,7 @@ public class PanRestV1Controller {
             for (Part part : parts) {
                 // 忽略路径字段,只处理文件类型
                 if (part.getContentType() != null) {
-                    String fullPath = root + "sandeepin/" + path;
+                    String fullPath = root + "jynba/" + path;
                     System.out.println("fullPath:" + fullPath);
                     File f = new File(fullPath, getFileNameByContentDisposition(part.getHeader("content-disposition")));
                     if (!writeInputStreamToFile(part.getInputStream(), f)) {
