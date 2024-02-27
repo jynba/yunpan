@@ -8,7 +8,7 @@
     "build": "umi build"
   },
   "keywords": [],
-  "author": "Sandeepin",
+  "author": "jynba",
   "license": "ISC",
   "devDependencies": {
     "umi": "^2.0.3",

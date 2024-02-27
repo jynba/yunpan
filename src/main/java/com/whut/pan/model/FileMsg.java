@@ -3,7 +3,7 @@ package com.whut.pan.model;
 import java.util.UUID;
 
 /**
- * @author Sandeepin
+ * @author jynba
  * 2018/2/11 0011
  */
 public class FileMsg {

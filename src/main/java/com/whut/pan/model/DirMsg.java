@@ -3,7 +3,7 @@ package com.whut.pan.model;
 /**
  * 新建文件夹模型
  *
- * @author Sandeepin
+ * @author jynba
  * @date 2019/9/10 0010
  */
 public class DirMsg {
