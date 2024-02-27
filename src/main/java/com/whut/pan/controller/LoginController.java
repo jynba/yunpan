@@ -113,11 +113,12 @@ public class LoginController {
         }
         User dataBaseUser = userService.queryUserByUsername(encryptedPwd);
         //regcode的重新写入
-        if (!iVerifyCodeService.isValid(regcode)) {
-            logger.info("注册失败，激活码失效或不正确！");
-            map.put("result", "2");
-            return map;
-        } else {
+//        if (!iVerifyCodeService.isValid(regcode)) {
+//            logger.info("注册失败，激活码失效或不正确！");
+//            map.put("result", "2");
+//            return map;
+//        } else
+        {
             if (dataBaseUser == null) {
                 User user = new User(userName, encryptedPwd, "0", email, phone, alias);
                 userService.add(user);
