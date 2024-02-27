@@ -20,7 +20,7 @@ import java.util.List;
 /**
  * Web配置
  *
- * @author Sandeepin
+ * @author jynba
  */
 @Configuration
 public class WebMvcConfiguration implements WebMvcConfigurer {

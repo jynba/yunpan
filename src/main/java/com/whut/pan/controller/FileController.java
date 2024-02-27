@@ -52,7 +52,7 @@ import javax.servlet.http.HttpServletResponse;
 /**
  * 文件管理
  *
- * @author Sandeepin
+ * @author jynba
  * 2018/2/9 0009
  */
 @Controller

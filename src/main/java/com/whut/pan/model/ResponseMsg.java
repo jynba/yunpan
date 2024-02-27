@@ -3,7 +3,7 @@ package com.whut.pan.model;
 /**
  * 给前台返回的操作结果
  *
- * @author Sandeepin
+ * @author jynba
  */
 public class ResponseMsg {
     private boolean success;

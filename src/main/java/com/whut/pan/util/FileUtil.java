@@ -16,7 +16,7 @@ import java.text.SimpleDateFormat;
 import static com.whut.pan.util.StringUtil.getfilesuffix;
 
 /**
- * @author Sandeepin
+ * @author jynba
  * 2018/2/11 0011
  */
 public class FileUtil {

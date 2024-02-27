@@ -5,7 +5,7 @@ import com.whut.pan.dao.model.User;
 import javax.servlet.http.HttpServletRequest;
 
 /**
- * @author Sandeepin
+ * @author jynba
  * 2018/2/12 0012
  */
 public class WebUtil {

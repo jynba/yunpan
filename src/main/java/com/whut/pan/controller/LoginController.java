@@ -32,7 +32,7 @@ import javax.servlet.http.HttpServletResponse;
  * 登录
  * 管理员admin 密码123 权限0(最高)
  *
- * @author Sandeepin
+ * @author jynba
  */
 @Controller
 public class LoginController {
@@ -112,12 +112,12 @@ public class LoginController {
             logger.error("UnsupportedEncodingException:", e);
         }
         User dataBaseUser = userService.queryUserByUsername(encryptedPwd);
-        //regcode的重新写入
-//        if (!iVerifyCodeService.isValid(regcode)) {
-//            logger.info("注册失败，激活码失效或不正确！");
-//            map.put("result", "2");
-//            return map;
-//        } else
+        regcode的重新写入
+       if (!iVerifyCodeService.isValid(regcode)) {
+           logger.info("注册失败，激活码失效或不正确！");
+           map.put("result", "2");
+           return map;
+       } else
         {
             if (dataBaseUser == null) {
                 User user = new User(userName, encryptedPwd, "0", email, phone, alias);

@@ -4,7 +4,7 @@ package com.whut.pan.dao.model;
  * 用户实体
  * 设置：用户名、密码、权限等级类型
  *
- * @author Sandeepin
+ * @author jynba
  */
 public class User {
     private int id;

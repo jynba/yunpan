@@ -13,7 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 /**
  * 主要页面映射
  *
- * @author Sandeepin
+ * @author jynba
  */
 @Controller
 public class IndexController {

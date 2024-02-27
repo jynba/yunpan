@@ -15,7 +15,7 @@ import javax.crypto.spec.DESKeySpec;
 import javax.crypto.spec.IvParameterSpec;
 
 /**
- * @author Sandeepin
+ * @author jynba
  * 2018/3/18 0018
  */
 public class EncryptUtil {
