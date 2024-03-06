@@ -25,7 +25,7 @@ public class IndexController {
      *
      * @return 页面
      */
-    @RequestMapping("/old")
+    @RequestMapping("/")
     public ModelAndView admin(HttpServletRequest request) {
         User user = (User) request.getSession().getAttribute("user");
         String userName = user.getUserName();

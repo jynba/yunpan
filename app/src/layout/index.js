@@ -52,6 +52,7 @@ export default class BasicLayout extends Component {
                             <Menu.Item key="1"><Link to="/">网盘</Link></Menu.Item>
                             <Menu.Item key="2"><Link to="/settings">设置</Link></Menu.Item>
                             <Menu.Item key="3"><a href="/old">旧版</a></Menu.Item>
+                            <Menu.Item key="4"><a href="/registerCode">邀请新用户</a></Menu.Item>
                         </Menu>
                     </Header>
                     <Content style={{ padding: '0 50px' }}>

@@ -73,8 +73,12 @@
             }
         }
         .strogeSpaceBar{background: #4cae4c; height: 20px;text-align: center;font-weight: bold;font-family: 'Microsoft Yahei'; color: #FFF;}
-    </style>
 
+        ul li:first-line {
+            font-weight: bold;
+            color: red;
+        }
+    </style>
 <body>
 <div id="loading" class="loading" style="display: none;">
     <div style="background:url(images/loading.gif) no-repeat 10px 50%;
@@ -88,21 +92,22 @@
     <p style="position: absolute;top:50%;left:45%;">文件生成中，请稍候……</p>
 </div>
 <div id="imgbackground" class="blur"
-     style="background: url('images/bg1.jpg');top:0; position: fixed;width: 100%;height: 100%;z-index: -1;">
+     style="background: #F0F2F5;top:0; position: fixed;width: 100%;height: 100%;z-index: -1;">
 </div>
 <div id="container" class="container"
-     style="width: 90%;margin-top:20px;margin-bottom: 20px; background-color: rgba(255,255,255,0.7);border-radius: 10px;">
-    <div class="header clearfix" style="margin: 0px; ">
+     style="width: 100%;padding:0;margin-top:20px;margin-bottom: 20px; background-color: rgba(255,255,255,0.7);border-radius: 10px;min-height:80vh;">
+    <div class="header clearfix" style="margin: 0px; background: #00284D; width: 100%">
         <img src="/images/pan-top.png" style="max-height: 55px;">
         <span>
                 <ul class="nav nav-pills pull-right" style="margin-top: 10px;">
                     <li role="presentation"><a id="userLName" href="/" th:text="${author}"
-                                               style="color: firebrick;background: unset;"></a></li>
-                    <li id="homeBtn" role="presentation"><a href="/">主页</a></li>
+                                               style="color: white;background: unset;"></a></li>
+                    <li id="homeBtn" role="presentation"><a href="/registerCode">邀请新用户</a></li>
                     <li id="quitBtn" role="presentation"><a style="cursor: pointer">退出</a></li>
                 </ul>
             </span>
     </div>
+    <div style="margin:0 40px">
     <div id="player_music"></div>
     <div class="row" style="margin-top: 15px;">
         <div class="col-sm-12">
@@ -180,6 +185,14 @@
                     <div id="file_drop_target" style="font-size: 20px;">
                         <h2 id="upload_file_path">请选择要上传的文件</h2>
                         <br/><br/>
+
+                        <label for="big">大文件上传断点续传</label>
+                        <input id="big" type="file" onchange="uploadBigFile(event)">
+                        <div>
+                            <span>进度:</span><span id="percent"></span>
+                            <ul id="progress" style="height: 600px;overflow-y: auto"></ul>
+                        </div>
+
                         <button id="pickerbtn" class="btn btn-info btn-lg active">选择文件
                             <button id="picker" class="hide" multiple></button>
                         </button>
@@ -199,10 +212,6 @@
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal">&times;</button>
                     <h4 class="modal-title">图片预览</h4>
-                </div>
-                <div class="modal-body" style="text-align: center;">
-                    <img id="imgview" src="/images/cf_code.jpg" style="max-height: 350px;display: inline-block">
-<!--                    <img src="/images/jfz_code.jpg" style="max-height: 350px;display: inline-block">-->
                 </div>
             </div>
         </div>
@@ -303,6 +312,7 @@
     <!--</p>-->
     <!--</footer>-->
 </div>
+</div>
 
 <script>
 
@@ -333,7 +343,7 @@
                     document.getElementById("shareLinkCopyCancel").style.display="block";
                     var rootLink = window.location.host;
                     if($("#outer_share").is(":checked")){
-                        rootLink = "119.29.246.201";
+                        rootLink = "119.29.246.201:8080";
                     }
                     var tgLink = "http://" + rootLink + "/sharefile?link=" + data.msg;
                     var tgReLink = tgLink.split("##");
@@ -517,7 +527,7 @@
         var nowStates = uploader.getStats();
         // uploader.reset();
         // uploader.removeFile(file.id,true);
-
+        console.log(nowStates,'nowStates',file,'file')
         if (nowStates.progressNum == 0) {
             if (nowStates.uploadFailNum != 0) {
                 alert(nowStates.uploadFailNum + '个文件上传失败！');
@@ -1782,6 +1792,237 @@
         });
     }
 
+</script>
+
+<script>
+    let fileUploader = null;
+    $(document).ready(() => {
+        // 按5MB进行分片
+        fileUploader = new FileUploader(5 * 1024 * 1024);
+    })
+
+    function uploadBigFile(event) {
+        fileUploader.startUpload(event.target.files);
+    }
+
+    class FileUploader {
+        static ALREADY_UPLOADED = 0;
+
+        /**
+         * @param chunkSize 分片大小
+         */
+        constructor(chunkSize) {
+            this.chunkSize = chunkSize;
+            this.fileObject = {
+                hasError: false
+            };
+            this.wulObj = {};
+            this.$progress = $("#progress");
+            this._initGlobalWebUploader();
+            this.webUploader = this._newWebUploader();
+        }
+
+        startUpload(files) {
+            this.interval = setInterval(() => {
+                this.$progress[0].scrollTop = this.$progress[0].scrollHeight;
+            }, 300);
+            this.webUploader.addFiles(files);
+        }
+
+        _initGlobalWebUploader() {
+            WebUploader.Uploader.register(
+                {
+                    "before-send-file": "beforeSendFile",
+                    "before-send": "beforeSend",
+                    "after-send-file": "afterSendFile"
+                },
+                {
+                    beforeSendFile: file => {
+                        this.$progress.append(`<li>beforeSendFile 每个文件只会触发一次<br/>file ${Object.entries(file)}</li>`);
+                        let deferred = WebUploader.Deferred();
+                        // 计算文件MD5
+                        this.webUploader
+                            .md5File(file)
+                            .progress(percent => {
+                                this.$progress.children(":last-child").html(`<li>文件md5计算进度: ${Math.ceil(percent * 100) + "%"}</li>`);
+                            })
+                            .then(fileMd5 => {
+                                    this.wulObj[file.id] = {};
+                                    this.wulObj[file.id].fileMd5 = fileMd5;
+                                    this.wulObj[file.id].fileSize = file.size;
+                                    this.wulObj[file.id].chunkSize = this.chunkSize;
+                                    this.wulObj[file.id].fileName = file.name;
+                                    let reqJsonObj = Object.assign({}, this.wulObj[file.id]);
+                                    this.$progress.append(`<li>调用checkBigFile检查文件中...</li>`);
+                                    $.ajax({
+                                        type: "POST",
+                                        url: "http://localhost:8080/upload/checkBigFile",
+                                        data: reqJsonObj,
+                                        dataType: "json",
+                                        success: resJsonObj => {
+                                            if (typeof resJsonObj.data === "string") {
+                                                this.$progress.append(`<li>文件检查完成,状态:已完成上传,访问链接:${resJsonObj.data}</li>`);
+                                                this.fileObject[file.id].url = resJsonObj.data;
+                                                deferred.reject(FileUploader.ALREADY_UPLOADED);
+                                            } else {
+                                                this.$progress.append(`<li>文件检查完成,状态:缺失分片${resJsonObj.data}</li>`);
+                                                this.fileObject[file.id].missingChunks = resJsonObj.data;
+                                                deferred.resolve();
+                                            }
+                                        },
+                                        error: e => {
+                                            deferred.reject(e);
+                                        },
+                                    });
+                                }
+                            );
+                        return deferred.promise();
+                    },
+                    beforeSend: block => {
+                        this.$progress.append(`<li>beforeSend:block 文件每个分片上传前触发一次<br/>${Object.entries(block)}</li>`);
+                        let deferred = WebUploader.Deferred();
+                        if (this.fileObject[block.file.id].missingChunks.indexOf(block.chunk) === -1) {
+                            this.$progress.append(`<li>服务器已存在该分片${block.chunk},跳过上传</li>`);
+                            deferred.reject();
+                        }
+                        this.webUploader
+                            .md5File(block.blob)
+                            .then(chunkMd5 => {
+                                    this.$progress.append(`<li>完成计算block ${block.chunk} md5:${chunkMd5}</li>`);
+                                    this.wulObj[block.file.id][block.chunk] = {};
+                                    this.wulObj[block.file.id][block.chunk].formData = {
+                                        chunk: block.chunk,
+                                        fileMd5: this.wulObj[block.file.id].fileMd5,
+                                        chunkMd5: chunkMd5,
+                                    };
+                                    deferred.resolve();
+                                }
+                            );
+                        return deferred.promise();
+                    },
+                    afterSendFile: file => {
+                        this.$progress.append(`<li>afterSendFile:file 所有分片上传完成,调用mergeBigFile合并文件分片<br/>${Object.entries(file)} </li>`);
+                        $.ajax({
+                            type: "POST",
+                            url: "http://localhost:8080/upload/mergeBigFile",
+                            data: {
+                                fileMd5: this.wulObj[file.id].fileMd5,
+                                fileName: file.name,
+                                chunkSize: this.chunkSize,
+                                size: this.wulObj[file.id].fileSize,
+                            },
+                            success: resJsonObj => {
+                                this.$progress.append(`<li>服务器合并文件分片完成,文件链接:${resJsonObj.data}</li>`);
+                                this.fileObject[file.id].url = resJsonObj.data;
+                                this.wulObj[file.id] = {};
+                            }
+                        });
+                    }
+                }
+            );
+        }
+
+        _newWebUploader() {
+            let webUploader = WebUploader.create({
+                // 文件上传路径
+                server: "http://localhost:8080/upload/uploadBigFile",
+                // 自动上传
+                auto: true,
+                // 禁止浏览器打开文件
+                disableGlobalDnd: true,
+                // 分片上传
+                chunked: true,
+                // 分片大小
+                chunkSize: this.chunkSize,
+                // 分片上传失败重试次数
+                chunkRetry: 1,
+                // 图片不做压缩
+                compress: false,
+                // 提前准备好下一个文件
+                prepareNextFile: true,
+                // 限制单个文件大小
+                fileSingleSizeLimit: 200 * 1024 * 1024,
+                fileNumLimit: 5,
+                //线程数
+                threads: 5,
+                // 限制格式
+                accept: {
+                    title: 'file',
+                    extensions: '*',
+                    mimeTypes: '*/*'
+                }
+            });
+            webUploader.on(
+                "fileQueued",
+                file => {
+                    this.$progress.append(`<li>fileQueued:file<br/>${Object.entries(file)}</li>`);
+                    this.fileObject[file.id] = {};
+                    this.fileObject[file.id].name = file.name;
+                    this.fileObject[file.id].blobUrl = URL.createObjectURL(file.source.source);
+                }
+            );
+            webUploader.on(
+                "uploadBeforeSend",
+                (block, headers) => {
+                    this.$progress.append(`<li>uploadBeforeSend:block,headers<br/>${Object.entries(block)} ${Object.entries(headers)}</li>`);
+                    Object.assign(headers, this.wulObj[block.file.id][block.chunk].formData);
+                }
+            );
+            webUploader.on(
+                "uploadProgress",
+                (file, percentage) => {
+                    this.$progress.append(`<li>uploadProgress:file,percentage<br/>${Object.entries(file)} ${Math.ceil(percentage * 100) + "%"}</li>`);
+                    this.fileObject[file.id].percentage = Math.ceil(percentage * 100);
+                    $("#percent").text(this.fileObject[file.id].percentage + "%");
+                }
+            );
+            webUploader.on(
+                "uploadAccept",
+                (obj, res) => {
+                    this.$progress.append(`<li>uploadAccept:file,res<br/>${Object.entries(obj.file)} ${Object.entries(res)}</li>`);
+                    return res.code === 0;
+
+                }
+            );
+            webUploader.on(
+                "uploadSuccess",
+                file => {
+                    this.$progress.append(`<li>uploadSuccess:file<br/>${Object.entries(file)}</li>`);
+                    setTimeout(() => clearInterval(this.interval), 1000);
+                }
+            );
+            webUploader.on(
+                "uploadError",
+                (file, res) => {
+                    if (res === FileUploader.ALREADY_UPLOADED) {
+                        this.fileObject[file.id].percentage = 100;
+                        $("#percent").text(this.fileObject[file.id].percentage + "%");
+                    } else {
+                        this.$progress.append(`<li>uploadError:file<br/>${Object.entries(file)} res:${res}</li>`);
+                        this.fileObject[file.id].hasError = true;
+                    }
+                }
+            );
+            webUploader.on(
+                "uploadComplete",
+                file => {
+                    this.$progress.append(`<li>uploadComplete:file<br/>${Object.entries(file)} ${file.getStatus()}</li>`);
+                    if (this.fileObject[file.id].hasError) {
+                        $("#percent").text("上传出错,请重试");
+                    }
+                    setTimeout(() => clearInterval(this.interval), 1000);
+                }
+            );
+            webUploader.on(
+                "error",
+                type => {
+                    this.$progress.append(`<li>error:type ${type}</li>`);
+                    console.error("error:", type);
+                }
+            );
+            return webUploader;
+        }
+    }
 </script>
 </body>
 

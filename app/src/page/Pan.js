@@ -1,6 +1,6 @@
 import {Breadcrumb, Button, Icon, Input, message, Modal, Progress, Table, Tree, Upload} from 'antd';
 import reqwest from 'reqwest';
-import DPlayer from "react-dplayer";
+import DPlayer from 'dplayer';
 
 export default () => {
     return (<div><Pan/></div>);

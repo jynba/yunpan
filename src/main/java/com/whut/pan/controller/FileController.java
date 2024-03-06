@@ -153,7 +153,7 @@ public class FileController {
             //这里校验要填真实的路经
             String newLink = link.replace("/data/", fileRootPath);
             String[] md5Array = FileSplit.splitBySizeSubSection(newLink, size,
-                fileRootPath + "/tempMd5/" + userName + "/");
+                    fileRootPath + "/tempMd5/" + userName + "/");
             j.setObj(md5Array);
         } catch (Exception e) {
             logger.error("Exception:", e);
@@ -191,12 +191,12 @@ public class FileController {
             int suffixidx = (int) getfilesuffix(fileMsg.getName(), true);
             String suffix = fileMsg.getName().substring(suffixidx);
             if (suffix.equals("mkv") || suffix.equals("rmvb") || suffix.equals("avi") || suffix.equals("wmv")
-                || suffix.equals("3gp") || suffix.equals("rm")) {
+                    || suffix.equals("3gp") || suffix.equals("rm")) {
                 // 取非文件夹的所有文件名
                 List<String> namelist = fileMsgList.stream()
-                    .filter(f -> !f.getSize().equals("Directory"))
-                    .map(FileMsg::getName)
-                    .collect(Collectors.toList());
+                        .filter(f -> !f.getSize().equals("Directory"))
+                        .map(FileMsg::getName)
+                        .collect(Collectors.toList());
                 // 含有转码文件的情况下
                 if (namelist.contains(fileMsg.getName().substring(0, suffixidx) + "mp4")) {
                     Map<String, Object> map = ffmpegTaskMap.get(fileMsg.getLink());
@@ -223,7 +223,7 @@ public class FileController {
     @RequestMapping(value = "/userfilelist", produces = "application/json; charset=utf-8")
     @ResponseBody
     public List<FileMsg> userFileList(@RequestParam(required = false) String key, String path,
-        HttpServletRequest request) {
+                                      HttpServletRequest request) {
         if (path == null) {
             path = "/";
         }
@@ -242,12 +242,12 @@ public class FileController {
             int suffixidx = (int) getfilesuffix(fileMsg.getName(), true);
             String suffix = fileMsg.getName().substring(suffixidx);
             if (suffix.equals("mkv") || suffix.equals("rmvb") || suffix.equals("avi") || suffix.equals("wmv")
-                || suffix.equals("3gp") || suffix.equals("rm")) {
+                    || suffix.equals("3gp") || suffix.equals("rm")) {
                 // 取非文件夹的所有文件名
                 List<String> namelist = fileMsgList.stream()
-                    .filter(f -> !f.getSize().equals("Directory"))
-                    .map(FileMsg::getName)
-                    .collect(Collectors.toList());
+                        .filter(f -> !f.getSize().equals("Directory"))
+                        .map(FileMsg::getName)
+                        .collect(Collectors.toList());
                 // 含有转码文件的情况下
                 if (namelist.contains(fileMsg.getName().substring(0, suffixidx) + "mp4")) {
                     Map<String, Object> map = ffmpegTaskMap.get(fileMsg.getLink());
@@ -492,7 +492,7 @@ public class FileController {
     @RequestMapping(value = "/sharefileSecret", produces = "application/json; charset=utf-8")
     @ResponseBody
     public ResponseMsg shareFileSecret(String link, String secret, HttpServletRequest request,
-        HttpServletResponse response) {
+                                       HttpServletResponse response) {
         logger.warn("执行sharefileSecret接口");
         String downloadLink = "";
         Map<Object, String> map = new HashMap<>();
@@ -524,7 +524,7 @@ public class FileController {
     @RequestMapping(value = "/generateShareLink", produces = "application/json; charset=utf-8")
     @ResponseBody
     public ResponseMsg generateShareLink(@RequestParam String expireDay, String fileName, String path,
-        HttpServletRequest request) {
+                                         HttpServletRequest request) {
         String expireDayString = expireDay;
         int expireDays = 3;
         if (expireDayString != null) {
@@ -642,9 +642,9 @@ public class FileController {
     @RequestMapping(value = "/uploadsevlet", method = RequestMethod.POST)
     @ResponseBody
     public void uploadSevlet(HttpServletRequest request, HttpServletResponse response, MultipartFile file,
-        String path) {
+                             String path) {
 
-        //        String fileMd5 = request.getParameter("fileMd5");
+        String fileMd5 = request.getParameter("fileMd5");
         String chunk = request.getParameter("chunk");
         logger.warn("chunk:" + chunk);
         String fileName = file.getOriginalFilename();
@@ -692,12 +692,12 @@ public class FileController {
         ResponseMsg responseMsg = new ResponseMsg();
         logger.warn("执行check-------------------");
         String fileName = request.getParameter("fileName");
-        //        String fileMd5 = request.getParameter("fileMd5");
+        String fileMd5 = request.getParameter("fileMd5");
         String chunk = request.getParameter("chunk");
-        logger.warn("checkChunk+chunk:" + chunk);
         String chunkSize = request.getParameter("chunkSize");
-        logger.warn("checkChunk+chunkSize:" + chunkSize);
         String userName = getUserNameByRequest(request);
+        logger.warn("checkChunk+chunk:" + chunk);
+        logger.warn("checkChunk+chunkSize:" + chunkSize);
         logger.warn(tempPath);
         String tempDir = FileUtil.getTempDir(tempPath, userName, fileName);
         tempDir = StringUtil.stringSlashToOne(tempDir);
@@ -721,7 +721,7 @@ public class FileController {
     @RequestMapping(value = "/merge")
     @ResponseBody
     public void mergeChunks(HttpServletRequest request, HttpServletResponse response, String path)
-        throws InterruptedException {
+            throws InterruptedException {
         if (path == null) {
             return;
         }
@@ -796,8 +796,6 @@ public class FileController {
 
         int aaa = aString.lastIndexOf("d");
 
-
-        
 
         return responseMsg;
     }
