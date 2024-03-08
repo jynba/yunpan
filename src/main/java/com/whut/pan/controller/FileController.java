@@ -646,7 +646,7 @@ public class FileController {
 
         String fileMd5 = request.getParameter("fileMd5");
         String chunk = request.getParameter("chunk");
-        logger.warn("chunk:" + chunk);
+
         String fileName = file.getOriginalFilename();
         String userName = getUserNameByRequest(request);
         MultipartHttpServletRequest Murequest = (MultipartHttpServletRequest) request;
